@@ -16,7 +16,7 @@ const CartItem = ({ onContinueShopping }) => {
       .toFixed(2);
   };
 
-  const handleCheckoutShopping = (e) => {
+  const handleCheckoutShopping = () => {
     alert("Functionality to be added for future reference");
   };
 

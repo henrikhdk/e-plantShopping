@@ -17,6 +17,11 @@ function ProductList({ onHomeClick }) {
     return cart.some(item => item.name === plantName);
   };
 
+  // Calculate total quantity of items in cart
+  const calculateTotalQuantity = () => {
+    return cart ? cart.reduce((total, item) => total + item.quantity, 0) : 0;
+  };
+
   const plantsArray = [
     {
       category: "Air Purifying Plants",
@@ -359,7 +364,7 @@ function ProductList({ onHomeClick }) {
                     minWidth: '18px',
                     textAlign: 'center'
                   }}>
-                    {cart.reduce((total, item) => total + item.quantity, 0)}
+                    {calculateTotalQuantity()}
                   </span>
                 )}
               </h1>
