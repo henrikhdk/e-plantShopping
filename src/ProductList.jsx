@@ -1,22 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { addItem } from "./CartSlice";
 import "./ProductList.css";
 import CartItem from "./CartItem";
 function ProductList({ onHomeClick }) {
   const [showCart, setShowCart] = useState(false);
-  const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
-  const [addedToCart, setAddedToCart] = useState({});
   const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cart.items);
 
   const handleAddToCart = (product) => {
     dispatch(addItem(product)); // Dispatch the action to add the product to the cart (Redux action)
+  };
 
-    setAddedToCart((prevState) => ({
-      // Update the local state to reflect that the product has been added
-      ...prevState, // Spread the previous state to retain existing entries
-      [product.name]: true, // Set the current product's name as a key with value 'true' to mark it as added
-    }));
+  // Check if a plant is already in the cart
+  const isPlantInCart = (plantName) => {
+    return cart.some(item => item.name === plantName);
   };
 
   const plantsArray = [
@@ -293,8 +291,7 @@ function ProductList({ onHomeClick }) {
   };
   const handlePlantsClick = (e) => {
     e.preventDefault();
-    setShowPlants(true); // Set showAboutUs to true when "About Us" link is clicked
-    setShowCart(false); // Hide the cart when navigating to About Us
+    setShowCart(false); // Hide the cart when navigating to Plants
   };
 
   const handleContinueShopping = (e) => {
@@ -349,6 +346,22 @@ function ProductList({ onHomeClick }) {
                     id="mainIconPathAttribute"
                   ></path>
                 </svg>
+                {cart.length > 0 && (
+                  <span style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    backgroundColor: 'red',
+                    color: 'white',
+                    borderRadius: '50%',
+                    padding: '2px 6px',
+                    fontSize: '12px',
+                    minWidth: '18px',
+                    textAlign: 'center'
+                  }}>
+                    {cart.reduce((total, item) => total + item.quantity, 0)}
+                  </span>
+                )}
               </h1>
             </a>
           </div>
@@ -394,10 +407,11 @@ function ProductList({ onHomeClick }) {
                         <div className="product-cost">${plant.cost}</div>{" "}
                         {/* Display plant cost */}
                         <button
-                          className="product-button"
+                          className={`product-button ${isPlantInCart(plant.name) ? 'added-to-cart' : ''}`}
                           onClick={() => handleAddToCart(plant)} // Handle adding plant to cart
+                          disabled={isPlantInCart(plant.name)}
                         >
-                          Add to Cart
+                          {isPlantInCart(plant.name) ? 'Added to Cart' : 'Add to Cart'}
                         </button>
                       </div>
                     )
